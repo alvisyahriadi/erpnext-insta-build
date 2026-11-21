@@ -12,6 +12,15 @@ RUN set -eux; \
     bench get-app --branch version-16 https://github.com/frappe/hrms.git; \
     bench get-app --branch 15.36.0 https://github.com/defendicon/POS-Awesome-V15.git; \
     bench get-app --branch v1.4.1 https://github.com/agile-technica/erpnext-indonesia-localization.git; \
+    printf '%s\n' \
+        '' \
+        'add_to_apps_screen = [{' \
+        '    "name": "posawesome",' \
+        '    "logo": "/assets/posawesome/icons/logo-512.png",' \
+        '    "title": "POS Awesome",' \
+        '    "route": "/app/posapp",' \
+        '}]' \
+        >> apps/posawesome/posawesome/hooks.py; \
     cd apps/posawesome; \
     yarn --cwd frontend install --cache-folder /tmp/yarn-cache; \
     yarn --cwd frontend build; \
@@ -20,6 +29,9 @@ RUN set -eux; \
         --app hrms \
         --app posawesome \
         --app erpnext_indonesia_localization; \
+    ln -s /home/frappe/frappe-bench/apps/hrms/hrms/public assets/hrms; \
+    ln -s /home/frappe/frappe-bench/apps/posawesome/posawesome/public assets/posawesome; \
+    ln -s /home/frappe/frappe-bench/apps/erpnext_indonesia_localization/erpnext_indonesia_localization/public assets/erpnext_indonesia_localization; \
     find apps/hrms apps/posawesome apps/erpnext_indonesia_localization \
         -type d -name node_modules -prune -exec rm -rf '{}' +; \
     rm -rf /tmp/yarn-cache /home/frappe/.cache
